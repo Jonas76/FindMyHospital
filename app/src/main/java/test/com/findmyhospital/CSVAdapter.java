@@ -49,7 +49,7 @@ public class CSVAdapter extends ArrayAdapter<HospitalReader> {
 
         //Set the state name as the text.
         //mView.setText(getItem(pos).getOrganisationName());
-        mView.setText(getItem(pos).getOrganisationName());
+        mView.setText(getItem(pos).getOrganisationID());
 
         return mView;
     }
@@ -73,7 +73,7 @@ public class CSVAdapter extends ArrayAdapter<HospitalReader> {
 
                 //Create a State object for this row's data.
                 HospitalReader cur = new HospitalReader();
-                cur.setOrganisationName(RowData[0]);
+                cur.setOrganisationID(RowData[0]);
 
                 /*
                 cur.setOrganisationCode(RowData[1]);
