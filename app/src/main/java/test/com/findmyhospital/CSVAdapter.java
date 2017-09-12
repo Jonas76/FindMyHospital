@@ -1,6 +1,7 @@
 package test.com.findmyhospital;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -18,7 +19,7 @@ import java.net.URL;
 
 public class CSVAdapter extends ArrayAdapter<HospitalReader> {
     private Context ctx;
-
+    private static String Tag = CSVAdapter.class.getName();
     private String hospitalURL = "https://data.gov.uk/data/resource/nhschoices/Hospital.csv";
 
     public CSVAdapter(Context context, int textViewResourceId) {
@@ -47,21 +48,8 @@ public class CSVAdapter extends ArrayAdapter<HospitalReader> {
         }
 
         //Set the state name as the text.
-        try {
-            mView.setText(getItem(pos).getOrganisationID());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        //We could handle the row clicks from here. But instead
-        //we'll use the ListView.OnItemClickListener from inside
-        //of MainActivity, which provides some benefits over doing it here.
-
-		/*mView.setOnClickListener(new OnClickListener(){
-			public void onClick(View v){
-				Toast.makeText(parent.getContext(), getItem(pos).getOrganisationID(), Toast.LENGTH_SHORT).show();
-			}
-		});*/
+        //mView.setText(getItem(pos).getOrganisationName());
+        mView.setText(getItem(pos).getOrganisationName());
 
         return mView;
     }
@@ -70,27 +58,84 @@ public class CSVAdapter extends ArrayAdapter<HospitalReader> {
 
         try {
             // Get input stream and Buffered Reader for our data file.
-            InputStream is = new URL(hospitalURL).openStream();//ctx.getResources().openRawResource(R.raw.hospital);
+            //This can be used to get csv file from folder ctx.getResources().openRawResource(R.raw.hospital);
+            InputStream is = new URL(hospitalURL).openStream();
             BufferedReader reader = new BufferedReader(new InputStreamReader(is));
             String line;
             //Read each line
 
             while ((line = reader.readLine()) != null) {
                 //Split to separate the name from the capital
-
+                //TODO: have tried regex to split,However seems csv has no commas to spilt columns
+                //String[] RowData = line.split("[ ]+");//("/,(?=(?:[^\"]*\"[^\"]*\")*(?![^\"]*\"))/");
                 String[] RowData = line.split(",");
+                Log.d("Reading","" + line);
 
                 //Create a State object for this row's data.
                 HospitalReader cur = new HospitalReader();
+                cur.setOrganisationName(RowData[0]);
 
-                cur.setOrganisationID(RowData[0]);
+                /*
+                cur.setOrganisationCode(RowData[1]);
+                cur.setOrganisationType(RowData[2]);
+                cur.setSubType(RowData[3]);
+                cur.setSector(RowData[4]);
+                cur.setOrganisationStatus(RowData[5]);
+                cur.setIsPimsManaged(RowData[6]);
+                cur.setOrganisationName(RowData[7]);
+                cur.setAddress1(RowData[8]);
+                cur.setAddress2(RowData[9]);
+                cur.setAddress3(RowData[10]);
+                cur.setCity(RowData[11]);
+                cur.setCounty(RowData[12]);
+                cur.setPostcode(RowData[13]);
+                cur.setLatitude(Integer.parseInt(RowData[14]);
+                cur.setLongitude(Integer.parseInt(RowData[15]);
+                cur.setParentODSCode(RowData[16]);
+                cur.setParentName(RowData[17]);
+                cur.setPhone(Integer.parseInt(RowData[18]);
+                cur.setEmail(RowData[19]);
+                cur.setWebsite(RowData[20]);
+                cur.setFax(Integer.parseInt(RowData[21]));
 
-                //getting more columns seems to fail, maybe due to csv file not have separated column?
-//					try {
-//						cur.setOrganisationCode(RowData[1]);
-//					}catch (ArrayIndexOutOfBoundsException e) {
-//						Log.e("OrganisationCode"," Failed");
-//					}
+                try {
+                    cur.setOrganisationCode(RowData[1]);
+                } catch (ArrayIndexOutOfBoundsException e) {
+                    throw new InvalidObjectException(" OrganisationCode:" + e);
+                   // Log.e(Tag, " OrganisationCode:" + e);
+                }
+                try {
+                    cur.setOrganisationType(RowData[2]);
+                } catch (ArrayIndexOutOfBoundsException e) {
+                    //Log.e(Tag, "OrganisationType:" + e);
+                }
+                try {
+                    cur.setSubType(RowData[3]);
+                } catch (ArrayIndexOutOfBoundsException e) {
+                    //Log.e(Tag, "SubType:" + e);
+                }
+                try {
+                    cur.setSector(RowData[4]);
+                } catch (ArrayIndexOutOfBoundsException e) {
+                    //Log.e(Tag, "Sector:" + e);
+                }
+                try {
+                    cur.setOrganisationStatus(RowData[5]);
+                } catch (ArrayIndexOutOfBoundsException e) {
+                    //Log.e(Tag, "OrganisationStatus:" + e);
+                }
+                try {
+                    cur.setIsPimsManaged(RowData[6]);
+                } catch (ArrayIndexOutOfBoundsException e) {
+                    //Log.e(Tag, "IsPimsManaged:" + e);
+                }
+                try {
+                    cur.setOrganisationName(RowData[7]);
+                } catch (ArrayIndexOutOfBoundsException e) {
+                    //Log.e(Tag, "OrganisationName:" + e);
+                }
+                */
+
                 //Add the State object to the ArrayList (in this case we are the ArrayList).
                 this.add(cur);
             }
